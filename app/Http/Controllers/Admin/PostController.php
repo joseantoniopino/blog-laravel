@@ -69,12 +69,14 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function show($id)
     {
         $post = Post::find($id);
+        $this->authorize('pass', $post);
 
         return view('admin.posts.show', compact('post'));
     }
@@ -102,11 +104,12 @@ class PostController extends Controller
      * @param PostUpdateRequest $request
      * @param  int $id
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(PostUpdateRequest $request, $id)
     {
         $post = Post::find($id);
-
+        $this->authorize('pass', $post);
         $post->fill($request->all())->save();
 
         //IMAGE
@@ -132,6 +135,7 @@ class PostController extends Controller
     public function destroy($id)
     {
         $post = Post::find($id);
+        $this->authorize('pass', $post);
         $post->delete();
         return back()->with('info', 'Entrada ' . $post->name . ' eliminada con éxito' );
     }
